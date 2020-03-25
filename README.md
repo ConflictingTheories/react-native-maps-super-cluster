@@ -1,5 +1,5 @@
-# React Native Super Cluster
-This module wraps [AirBnB's react-native-maps](https://github.com/airbnb/react-native-maps) and uses [MapBox's SuperCluster](https://github.com/mapbox/supercluster) as clustering engine.
+# React Native Super Multi Cluster
+This module wraps [AirBnB's react-native-maps](https://github.com/airbnb/react-native-maps) and uses [my fork of MapBox's SuperCluster - SuperMultiCluster](https://github.com/conflictingTheories/supermulticluster) as clustering engine.
 
 ## Example
 
@@ -10,10 +10,10 @@ This module wraps [AirBnB's react-native-maps](https://github.com/airbnb/react-n
 </center>
 
 ## Rationale
-This module wants to provide a stable and performing solution for maps clustering in React Native. In particular, our efforts are focused on integrating SuperCluster methods into React's state/lifecycle events, ensuring stability, compatibility and great performance.
+This module wants to provide a stable and performing solution for maps clustering in React Native. In particular, our efforts are focused on integrating SuperMultiCluster methods into React's state/lifecycle events, ensuring stability, compatibility and great performance.
 
 ## Install
-`npm i --save react-native-maps-super-cluster`
+`npm i --save react-native-maps-super-multi-cluster`
 
 ## Usage
 
@@ -26,7 +26,7 @@ This module wants to provide a stable and performing solution for maps clusterin
 ```JSX
 import React, { Component } from 'react'
 import { Marker, Callout } from 'react-native-maps'
-import ClusteredMapView from 'react-native-maps-super-cluster'
+import ClusteredMultiMapView from 'react-native-maps-super-multi-cluster'
 
 const INIT_REGION = {
   latitude: 41.8962667,
@@ -48,8 +48,8 @@ export default class MyClusteredMapView extends Component {
     // and apply it to "style" prop below
 
     // eventually get clustered points by using
-    // underlying SuperCluster instance
-    // Methods ref: https://github.com/mapbox/supercluster
+    // underlying SuperMultiCluster instance
+    // Methods ref: https://github.com/ConflictingTheories/supermulticluster
     const clusteringEngine = this.map.getClusteringEngine(),
           clusteredPoints = clusteringEngine.getLeaves(clusterId, 100)
 
@@ -87,8 +87,10 @@ export default class MyClusteredMapView extends Component {
 
   render() {
     return (
-      <ClusteredMapView
+      <ClusteredMultiMapView
         style={{flex: 1}}
+        typelist={this.state.typeList}
+        typeAccessor={this.state.typeAccessor}
         data={this.state.data}
         initialRegion={INIT_REGION}
         ref={(r) => { this.map = r }}
@@ -103,10 +105,10 @@ export default class MyClusteredMapView extends Component {
 
 **Name** | **Type** | **Required** | **Default** | **Note**
 ---------|----------|--------------|-------------|---------
-radius | Number | false | window width * 4,5% | [SuperCluster radius](https://github.com/mapbox/supercluster#options).
-extent | Number | false | 512 | [SuperCluster extent](https://github.com/mapbox/supercluster#options).
-minZoom | Number | false | 1 | [SuperCluster minZoom](https://github.com/mapbox/supercluster#options).
-maxZoom | Number | false | 16 | [SuperCluster maxZoom](https://github.com/mapbox/supercluster#options).
+radius | Number | false | window width * 4,5% | [SuperMultiCluster radius](https://github.com/ConflictingTheories/supermulticluster#options).
+extent | Number | false | 512 | [SuperMultiCluster extent](https://github.com/ConflictingTheories/supermulticluster#options).
+minZoom | Number | false | 1 | [SuperMultiCluster minZoom](https://github.com/ConflictingTheories/supermulticluster#options).
+maxZoom | Number | false | 16 | [SuperMultiCluster maxZoom](https://github.com/ConflictingTheories/supermulticluster#options).
 width | Number | false | window width | map's width.
 height | Number | false | window height | map's height.
 data | Array <Object> | true | undefined | Objects must have an attribute `location` representing a `GeoPoint`, i.e. `{ latitude: x, longitude: y }`.
@@ -126,7 +128,7 @@ accessor | String\|Func | true | "location" | Accessor for item coordinate value
 **Name** | **Params** | **Description** | **Note**
 ---------|------------|-----------------|---------
 getMapRef | none | Getter for underlying react-native-maps instance | [Official Doc](https://github.com/react-community/react-native-maps#component-api)
-getClusteringEngine | none | Getter for underlying SuperCluster instance | [Official Doc](https://github.com/mapbox/supercluster)
+getClusteringEngine | none | Getter for underlying SuperMultiCluster instance | [Official Doc](https://github.com/ConflictingTheories/supermulticluster)
 
 ## Production usage
 If you are using this module in a production application, please submit a PR or contact us to add it here.
@@ -149,13 +151,10 @@ If you are using this module in a production application, please submit a PR or 
 * improve `scaleUpRatio` math for fontSize
 * trigger events on cluster implode/explode
 
-# Support
-As an open source project, we provide free support over Github. However, our daily job may increase response time to days or even weeks. If you need dedicated support, feel free to [contact us](mailto:info@novalab.io) for a quote.
-
 # Contributors
-
++ [Kyle Derby MacInnis](https://github.com/ConflictingTheories)
 * [Leonardo Lusoli](https://github.com/leolusoli)
 * [Alberto Dallaporta](https://github.com/39otrebla)
 
 # License
-See [our License](https://github.com/novalabio/react-native-maps-super-cluster/blob/master/LICENSE) for more information.
+See [our License](https://github.com/ConflictingTheories/react-native-maps-super-multi-cluster/blob/master/LICENSE) for more information.

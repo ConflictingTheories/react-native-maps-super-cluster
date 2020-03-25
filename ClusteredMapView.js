@@ -10,7 +10,7 @@ import {
 } from 'react-native'
 // map-related libs
 import MapView from 'react-native-maps'
-import SuperCluster from 'supercluster'
+import SuperMultiCluster from 'supermulticluster'
 import GeoViewport from '@mapbox/geo-viewport'
 // components / views
 import ClusterMarker from './ClusterMarker'
@@ -21,13 +21,15 @@ import {
   getCoordinatesFromItem,
 } from './util'
 
-export default class ClusteredMapView extends PureComponent {
+export default class ClusteredMultiMapView extends PureComponent {
 
   constructor(props) {
     super(props)
 
     this.state = {
       data: [], // helds renderable clusters and markers
+      typeList: props.typeList || [], // Typelist 
+      typeAccessor: props.typeAccess || "item",
       region: props.region || props.initialRegion, // helds current map region
     }
 
@@ -40,7 +42,7 @@ export default class ClusteredMapView extends PureComponent {
   }
 
   componentDidMount() {
-    this.clusterize(this.props.data)
+    this.clusterize(this.props.data, this.props.typeList, this.props.typeAccessor)
   }
 
   componentWillReceiveProps(nextProps) {
@@ -65,8 +67,8 @@ export default class ClusteredMapView extends PureComponent {
     return this.index
   }
 
-  clusterize(dataset) {
-    this.index = new SuperCluster({ // eslint-disable-line new-cap
+  clusterize(dataset, typeList, accessor) {
+    this.index = new SuperMultiCluster({ // eslint-disable-line new-cap
       extent: this.props.extent,
       minZoom: this.props.minZoom,
       maxZoom: this.props.maxZoom,
@@ -76,8 +78,8 @@ export default class ClusteredMapView extends PureComponent {
     // get formatted GeoPoints for cluster
     const rawData = dataset.map(item => itemToGeoJSONFeature(item, this.props.accessor))
 
-    // load geopoints into SuperCluster
-    this.index.load(rawData)
+    // load geopoints into SuperMultiCluster
+    this.index.load(rawData, typeList, "properties."+accessor)
 
     const data = this.getClusters(this.state.region)
     this.setState({ data })
@@ -156,7 +158,7 @@ export default class ClusteredMapView extends PureComponent {
   }
 }
 
-ClusteredMapView.defaultProps = {
+ClusteredMultiMapView.defaultProps = {
   minZoom: 1,
   maxZoom: 16,
   extent: 512,
@@ -171,7 +173,7 @@ ClusteredMapView.defaultProps = {
   edgePadding: { top: 10, left: 10, right: 10, bottom: 10 }
 }
 
-ClusteredMapView.propTypes = {
+ClusteredMultiMapView.propTypes = {
   ...MapView.propTypes,
   // number
   radius: PropTypes.number,
